@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PostPilot.Api.Features.Profiles.Commands;
 using PostPilot.Api.Features.Profiles.Dtos;
+using PostPilot.Api.Features.Profiles.Queries;
 using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Auth;
 
@@ -31,7 +33,7 @@ public sealed class ProfilesController : ControllerBase
     [ProducesResponseType(typeof(ProfileResponseDto), StatusCodes.Status201Created)]
     public async Task<ActionResult<ProfileResponseDto>> Create(
         [FromBody] CreateProfileRequestDto request,
-        [FromServices] CreateProfileCommand command,
+        [FromServices] CreateProfileCommandExecutor command,
         [FromServices] ICurrentUserContext currentUser,
         CancellationToken cancellationToken)
     {

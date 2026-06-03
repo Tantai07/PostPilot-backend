@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Database;
 
-namespace PostPilot.Api.Features.Profiles;
+namespace PostPilot.Api.Features.Profiles.Queries;
 
 public sealed class ProfileQueryExecutor
 {

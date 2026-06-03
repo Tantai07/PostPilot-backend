@@ -2,13 +2,13 @@ using PostPilot.Api.Features.Profiles.Dtos;
 using PostPilot.Domain.Entities;
 using PostPilot.Infrastructure.Database;
 
-namespace PostPilot.Api.Features.Profiles;
+namespace PostPilot.Api.Features.Profiles.Commands;
 
-public sealed class CreateProfileCommand
+public sealed class CreateProfileCommandExecutor
 {
     private readonly AppDbContext _dbContext;
 
-    public CreateProfileCommand(AppDbContext dbContext)
+    public CreateProfileCommandExecutor(AppDbContext dbContext)
     {
         _dbContext = dbContext;
     }

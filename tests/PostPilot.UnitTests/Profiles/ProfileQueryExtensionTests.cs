@@ -1,5 +1,5 @@
 using FluentAssertions;
-using PostPilot.Api.Features.Profiles;
+using PostPilot.Api.Features.Profiles.Queries;
 using PostPilot.Domain.Entities;
 
 namespace PostPilot.UnitTests.Profiles;

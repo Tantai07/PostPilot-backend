@@ -2,11 +2,14 @@ using PostPilot.Api.Shared;
 using PostPilot.Api.Startup;
 using PostPilot.Infrastructure.Database;
 using PostPilot.Infrastructure.Startup;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
 builder.Services.AddCors(options =>
 {
@@ -33,6 +36,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+        options.WithTitle("PostPilot API");
+    });
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
