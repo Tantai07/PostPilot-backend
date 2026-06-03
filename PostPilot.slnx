@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PostPilot.Api/PostPilot.Api.csproj" />
+    <Project Path="src/PostPilot.Domain/PostPilot.Domain.csproj" />
+    <Project Path="src/PostPilot.Infrastructure/PostPilot.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PostPilot.IntegrationTests/PostPilot.IntegrationTests.csproj" />
+    <Project Path="tests/PostPilot.UnitTests/PostPilot.UnitTests.csproj" />
+  </Folder>
+</Solution>
