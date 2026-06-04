@@ -20,8 +20,6 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
         services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();
         services.AddScoped<ITokenEncryptionService, DevelopmentTokenEncryptionService>();
-        services.AddScoped<AdminUserSeeder>();
-
         return services;
     }
 }

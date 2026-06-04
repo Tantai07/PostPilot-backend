@@ -17,15 +17,16 @@ public sealed class JwtTokenService : IJwtTokenService
         _options = options.Value;
     }
 
-    public LoginResponseDto CreateLoginResponse(AdminUser adminUser)
+    public LoginResponseDto CreateLoginResponse(User user)
     {
         var expiresAt = DateTimeOffset.UtcNow.AddMinutes(_options.ExpirationMinutes);
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, adminUser.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, adminUser.Email),
-            new Claim(ClaimTypes.NameIdentifier, adminUser.Id.ToString()),
-            new Claim(ClaimTypes.Email, adminUser.Email)
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Role.ToString())
         };
 
         var credentials = new SigningCredentials(
@@ -44,7 +45,7 @@ public sealed class JwtTokenService : IJwtTokenService
             AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
             TokenType = "Bearer",
             ExpiresAt = expiresAt,
-            AdminUser = adminUser.ToDto()
+            User = user.ToDto()
         };
     }
 }

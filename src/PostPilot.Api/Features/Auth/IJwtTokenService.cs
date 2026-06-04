@@ -5,5 +5,5 @@ namespace PostPilot.Api.Features.Auth;
 
 public interface IJwtTokenService
 {
-    LoginResponseDto CreateLoginResponse(AdminUser adminUser);
+    LoginResponseDto CreateLoginResponse(User user);
 }

@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using PostPilot.Api.Features.Auth;
 using PostPilot.Api.Features.Shared;
 using PostPilot.Api.Shared;
+using PostPilot.Domain.Enums;
 using PostPilot.Infrastructure.Auth;
 
 namespace PostPilot.Api.Startup;
@@ -47,6 +48,7 @@ public static class AuthServiceCollectionExtensions
             options.AddPolicy(AuthorizationPolicies.AdminOnly, policy =>
             {
                 policy.RequireAuthenticatedUser();
+                policy.RequireRole(UserRole.Admin.ToString());
             });
         });
 

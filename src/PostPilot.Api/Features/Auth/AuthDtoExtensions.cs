@@ -5,6 +5,6 @@ namespace PostPilot.Api.Features.Auth;
 
 public static class AuthDtoExtensions
 {
-    public static AdminUserDto ToDto(this AdminUser entity)
-        => AdminUserDto.FromEntity(entity);
+    public static UserDto ToDto(this User entity)
+        => UserDto.FromEntity(entity);
 }

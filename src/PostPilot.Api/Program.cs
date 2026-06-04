@@ -1,10 +1,11 @@
 using PostPilot.Api.Shared;
 using PostPilot.Api.Startup;
-using PostPilot.Infrastructure.Database;
 using PostPilot.Infrastructure.Startup;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -51,12 +52,5 @@ app.UseAuthorization();
 
 app.MapHealthChecks("/health");
 app.MapControllers();
-
-if (string.Equals(builder.Configuration["POSTPILOT_SEED_ADMIN_ON_STARTUP"], "true", StringComparison.OrdinalIgnoreCase))
-{
-    using var scope = app.Services.CreateScope();
-    var seeder = scope.ServiceProvider.GetRequiredService<AdminUserSeeder>();
-    await seeder.SeedAsync();
-}
 
 app.Run();

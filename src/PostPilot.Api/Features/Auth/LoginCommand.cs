@@ -26,15 +26,15 @@ public sealed class LoginCommand
         }
 
         var email = request.Email.Trim().ToLowerInvariant();
-        var adminUser = await _dbContext.AdminUsers
+        var user = await _dbContext.Users
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Email == email && x.IsActive, cancellationToken);
 
-        if (adminUser is null || !_passwordHasher.Verify(request.Password, adminUser.PasswordHash))
+        if (user is null || !_passwordHasher.Verify(request.Password, user.PasswordHash))
         {
             return null;
         }
 
-        return _jwtTokenService.CreateLoginResponse(adminUser);
+        return _jwtTokenService.CreateLoginResponse(user);
     }
 }

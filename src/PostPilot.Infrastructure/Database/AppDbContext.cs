@@ -15,7 +15,7 @@ public sealed class AppDbContext : DbContext
         _currentUserContext = currentUserContext;
     }
 
-    public DbSet<AdminUser> AdminUsers => Set<AdminUser>();
+    public DbSet<User> Users => Set<User>();
     public DbSet<Profile> Profiles => Set<Profile>();
     public DbSet<SocialAccount> SocialAccounts => Set<SocialAccount>();
     public DbSet<MetaToken> MetaTokens => Set<MetaToken>();

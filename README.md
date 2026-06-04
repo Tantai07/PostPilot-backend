@@ -42,13 +42,11 @@ POSTPILOT_JWT_SIGNING_KEY
 POSTPILOT_JWT_ISSUER
 POSTPILOT_JWT_AUDIENCE
 POSTPILOT_JWT_EXPIRATION_MINUTES
-POSTPILOT_SEED_ADMIN_ON_STARTUP
-POSTPILOT_SEED_ADMIN_EMAIL
-POSTPILOT_SEED_ADMIN_PASSWORD
-POSTPILOT_SEED_ADMIN_DISPLAY_NAME
 ```
 
-`POSTPILOT_SEED_ADMIN_ON_STARTUP` defaults to `false` so the API can start before a database is available. Set it to `true` after configuring PostgreSQL if you want the seed admin user created at startup.
+Create user records directly in the database. The API does not seed users at startup.
+
+Passwords must be stored as hashes using the same format as `Pbkdf2PasswordHasher`.
 
 Run locally:
 
