@@ -30,7 +30,8 @@ builder.Services.AddCors(options =>
 builder.Services
     .AddPostPilotInfrastructure(builder.Configuration)
     .AddPostPilotAuth(builder.Configuration)
-    .AddProfileFeature();
+    .AddProfileFeature()
+    .AddCategoryFeature();
 
 var app = builder.Build();
 
