@@ -31,7 +31,8 @@ builder.Services
     .AddPostPilotInfrastructure(builder.Configuration)
     .AddPostPilotAuth(builder.Configuration)
     .AddProfileFeature()
-    .AddCategoryFeature();
+    .AddCategoryFeature()
+    .AddMediaFeature();
 
 var app = builder.Build();
 
@@ -47,6 +48,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseCors(ApiConstants.LocalFrontendCorsPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
