@@ -14,6 +14,7 @@ public sealed class CategoryResponseDto : ResponseDtoBase<Category>, IFromEntity
         Description = entity.Description;
         UpdatedAt = entity.UpdatedAt ?? entity.CreatedAt;
         Tags = entity.Tags
+            .Where(x => x.DeletedAt is null)
             .OrderBy(x => x.SortOrder)
             .ThenBy(x => x.Id)
             .Select(CategoryTagResponseDto.FromEntity)
