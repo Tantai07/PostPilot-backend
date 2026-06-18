@@ -65,10 +65,14 @@ OpenAPI is available in development at `/openapi/v1.json`. Health checks are ava
 - `PUT /api/profiles/{profileId}/categories/{categoryId}`
 - `DELETE /api/profiles/{profileId}/categories/{categoryId}`
 - `POST /api/profiles/{profileId}/media`
+- `POST /api/profiles/{profileId}/posts/preview`
+- `POST /api/profiles/{profileId}/posts`
 
 Media upload currently uses local `wwwroot/uploads` storage for development and returns a public URL from the API host. Cloudinary or Supabase Storage can replace the local provider before production publishing.
 
-Later post, queue, history, dashboard, and Meta publish routes are still planned.
+Post preview combines caption with category tags without saving. Create post saves a draft using selected media ids from the media upload flow.
+
+Later queue, history, dashboard, and Meta publish routes are still planned.
 
 ## Verification
 
