@@ -42,7 +42,7 @@ public sealed class DashboardQueryExecutor
             .AsNoTracking()
             .CountAsync(x => x.ProfileId == profileId && !x.IsDeleted && x.Status == QueueItemStatus.Pending, cancellationToken);
 
-        var recentPosts = await _dbContext.Posts
+        var recentPostEntities = await _dbContext.Posts
             .AsNoTracking()
             .Include(x => x.Media)
             .Include(x => x.Targets)
@@ -50,7 +50,6 @@ public sealed class DashboardQueryExecutor
             .OrderByDescending(x => x.UpdatedAt ?? x.CreatedAt)
             .ThenByDescending(x => x.Id)
             .Take(5)
-            .Select(x => x.ToDto())
             .ToListAsync(cancellationToken);
 
         return new DashboardResponseDto
@@ -63,7 +62,7 @@ public sealed class DashboardQueryExecutor
             QueueStatus = pendingQueueItems == 0
                 ? "No posts are waiting in the manual queue."
                 : $"{pendingQueueItems} post(s) waiting in the manual queue.",
-            RecentPosts = recentPosts,
+            RecentPosts = recentPostEntities.Select(x => x.ToDto()).ToList(),
             Engagement = new DashboardEngagementSnapshotDto
             {
                 Reach = 0,
