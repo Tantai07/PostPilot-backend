@@ -14,3 +14,4 @@ coverage/
 .env
 appsettings.Local.json
 src/**/appsettings.Local.json
+src/PostPilot.Api/wwwroot/uploads/
