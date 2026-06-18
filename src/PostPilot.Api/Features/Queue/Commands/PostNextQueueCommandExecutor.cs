@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using PostPilot.Api.Features.Publishing;
 using PostPilot.Api.Features.Queue.Dtos;
+using PostPilot.Domain.Entities;
 using PostPilot.Domain.Enums;
 using PostPilot.Infrastructure.Database;
 
@@ -8,10 +10,12 @@ namespace PostPilot.Api.Features.Queue.Commands;
 public sealed class PostNextQueueCommandExecutor
 {
     private readonly AppDbContext _dbContext;
+    private readonly IPostPublisher _publisher;
 
-    public PostNextQueueCommandExecutor(AppDbContext dbContext)
+    public PostNextQueueCommandExecutor(AppDbContext dbContext, IPostPublisher publisher)
     {
         _dbContext = dbContext;
+        _publisher = publisher;
     }
 
     public async Task<QueueItemResponseDto?> ExecuteAsync(
@@ -36,13 +40,29 @@ public sealed class PostNextQueueCommandExecutor
             .ThenBy(x => x.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken);
 
-        if (nextItem is null)
+        if (nextItem?.Post is null)
         {
             return null;
         }
 
+        foreach (var target in nextItem.Post.Targets.Where(x => x.DeletedAt == null))
+        {
+            var result = await _publisher.PublishAsync(nextItem.PostId, target.TargetPlatform, cancellationToken);
+            var history = new PostHistory(
+                nextItem.PostId,
+                target.TargetPlatform,
+                result.IsSuccess ? "Posted" : "Failed",
+                result.ExternalPostId,
+                result.ErrorMessage)
+            {
+                CreatedBy = ownerUserId
+            };
+
+            _dbContext.PostHistory.Add(history);
+        }
+
         nextItem.MarkPosted();
-        nextItem.Post?.MarkPosted();
+        nextItem.Post.MarkPosted();
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return nextItem.ToDto();
