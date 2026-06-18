@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PostPilot.Api.Features.Posts.Dtos;
 using PostPilot.Domain.Entities;
-using PostPilot.Domain.Enums;
 using PostPilot.Infrastructure.Database;
 
 namespace PostPilot.Api.Features.Posts.Commands;
@@ -30,16 +29,10 @@ public sealed class CreatePostDraftCommandExecutor
             return null;
         }
 
-        if (request.CategoryId is not null)
+        var categoryTags = await GetCategoryTagsAsync(profileId, request.CategoryId, cancellationToken);
+        if (categoryTags is null)
         {
-            var categoryExists = await _dbContext.Categories
-                .AsNoTracking()
-                .AnyAsync(x => x.Id == request.CategoryId && x.ProfileId == profileId && !x.IsDeleted, cancellationToken);
-
-            if (!categoryExists)
-            {
-                return null;
-            }
+            return null;
         }
 
         var mediaAssets = await _dbContext.MediaAssets
@@ -54,7 +47,8 @@ public sealed class CreatePostDraftCommandExecutor
             return null;
         }
 
-        var post = new Post(profileId, request.CategoryId, request.Caption)
+        var finalCaption = PostPreviewBuilder.BuildCaption(request.Caption, categoryTags);
+        var post = new Post(profileId, request.CategoryId, finalCaption)
         {
             CreatedBy = ownerUserId
         };
@@ -68,7 +62,7 @@ public sealed class CreatePostDraftCommandExecutor
                 media.index + 1);
         }
 
-        foreach (var targetPlatform in ParseTargetPlatforms(request.TargetPlatforms))
+        foreach (var targetPlatform in PostRequestValidator.ParseTargetPlatforms(request.TargetPlatforms))
         {
             post.AddTarget(targetPlatform, Guid.Empty);
         }
@@ -79,23 +73,31 @@ public sealed class CreatePostDraftCommandExecutor
         return post.ToDto();
     }
 
-    private static IEnumerable<PostTargetPlatform> ParseTargetPlatforms(IEnumerable<string> targetPlatforms)
+    private async Task<IReadOnlyList<string>?> GetCategoryTagsAsync(
+        Guid profileId,
+        Guid? categoryId,
+        CancellationToken cancellationToken)
     {
-        return targetPlatforms
-            .Select(ParseTargetPlatform)
-            .Where(x => x is not null)
-            .Select(x => x!.Value)
-            .Distinct();
-    }
-
-    private static PostTargetPlatform? ParseTargetPlatform(string targetPlatform)
-    {
-        return targetPlatform.Trim().ToLowerInvariant() switch
+        if (categoryId is null)
         {
-            "facebook page" or "facebookpage" => PostTargetPlatform.FacebookPage,
-            "instagram feed" or "instagramfeed" => PostTargetPlatform.InstagramFeed,
-            "instagram story" or "instagramstory" => PostTargetPlatform.InstagramStory,
-            _ => null
-        };
+            return [];
+        }
+
+        var categoryExists = await _dbContext.Categories
+            .AsNoTracking()
+            .AnyAsync(x => x.Id == categoryId.Value && x.ProfileId == profileId && !x.IsDeleted, cancellationToken);
+
+        if (!categoryExists)
+        {
+            return null;
+        }
+
+        return await _dbContext.CategoryTags
+            .AsNoTracking()
+            .Where(x => x.CategoryId == categoryId.Value && !x.IsDeleted)
+            .OrderBy(x => x.SortOrder)
+            .ThenBy(x => x.Id)
+            .Select(x => x.TagText)
+            .ToListAsync(cancellationToken);
     }
 }
