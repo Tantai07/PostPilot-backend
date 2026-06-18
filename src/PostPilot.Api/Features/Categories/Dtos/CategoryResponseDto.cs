@@ -14,6 +14,7 @@ public sealed class CategoryResponseDto : ResponseDtoBase<Category>, IFromEntity
         Description = entity.Description;
         CaptionTemplate = entity.CaptionTemplate;
         Tags = entity.Tags
+            .Where(x => x.DeletedAt == null)
             .OrderBy(x => x.SortOrder)
             .ThenBy(x => x.Id)
             .Select(x => x.TagText)
