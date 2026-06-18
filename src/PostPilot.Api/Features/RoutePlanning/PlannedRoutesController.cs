@@ -9,7 +9,6 @@ namespace PostPilot.Api.Features.RoutePlanning;
 [Route("api/profiles/{id:guid}")]
 public sealed class PlannedRoutesController : ControllerBase
 {
-    [HttpGet("dashboard")]
     [HttpGet("categories")]
     [HttpPost("categories")]
     [HttpPost("media")]
