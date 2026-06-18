@@ -18,7 +18,6 @@ public sealed class PlannedRoutesController : ControllerBase
     [HttpGet("queue")]
     [HttpPut("queue")]
     [HttpPost("queue/post-next")]
-    [HttpGet("history")]
     public IActionResult PlannedProfileRoute(Guid id)
         => StatusCode(StatusCodes.Status501NotImplemented);
 
