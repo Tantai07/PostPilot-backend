@@ -7,6 +7,7 @@ public static class PostServiceCollectionExtensions
     public static IServiceCollection AddPostFeature(this IServiceCollection services)
     {
         services.AddScoped<CreatePostDraftCommandExecutor>();
+        services.AddScoped<PublishPostNowCommandExecutor>();
 
         return services;
     }
