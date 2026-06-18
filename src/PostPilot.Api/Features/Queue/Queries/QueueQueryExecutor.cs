@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PostPilot.Api.Features.Queue.Dtos;
+using PostPilot.Domain.Enums;
 using PostPilot.Infrastructure.Database;
 
 namespace PostPilot.Api.Features.Queue.Queries;
@@ -31,7 +32,7 @@ public sealed class QueueQueryExecutor
             .AsNoTracking()
             .Include(x => x.Post)
                 .ThenInclude(x => x!.Targets)
-            .Where(x => x.ProfileId == profileId && !x.IsDeleted && x.Status == Domain.Enums.QueueItemStatus.Pending)
+            .Where(x => x.ProfileId == profileId && !x.IsDeleted && x.Status == QueueItemStatus.Pending)
             .OrderBy(x => x.SortOrder)
             .ThenBy(x => x.CreatedAt)
             .Select(x => x.ToDto())
