@@ -44,8 +44,18 @@ public sealed class Post : SoftDeleteEntity
         Status = PostStatus.Queued;
     }
 
+    public void MarkPublishing()
+    {
+        Status = PostStatus.Publishing;
+    }
+
     public void MarkPosted()
     {
         Status = PostStatus.Posted;
+    }
+
+    public void MarkFailed()
+    {
+        Status = PostStatus.Failed;
     }
 }
