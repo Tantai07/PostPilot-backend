@@ -65,10 +65,16 @@ OpenAPI is available in development at `/openapi/v1.json`. Health checks are ava
 - `PUT /api/profiles/{profileId}/categories/{categoryId}`
 - `DELETE /api/profiles/{profileId}/categories/{categoryId}`
 - `POST /api/profiles/{profileId}/media`
+- `POST /api/profiles/{profileId}/posts/{postId}/queue`
+- `GET /api/profiles/{profileId}/queue`
+- `PUT /api/profiles/{profileId}/queue`
+- `POST /api/profiles/{profileId}/queue/post-next`
 
 Media upload currently uses local `wwwroot/uploads` storage for development and returns a public URL from the API host. Cloudinary or Supabase Storage can replace the local provider before production publishing.
 
-Later post, queue, history, dashboard, and Meta publish routes are still planned.
+Manual queue supports adding a draft post to the queue, reading pending queue items, reordering the full pending queue, and mock-posting the next pending item. Background scheduling and real Meta publishing are still planned.
+
+Later post creation, history, dashboard, and Meta publish routes are still planned.
 
 ## Verification
 
