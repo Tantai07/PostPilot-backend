@@ -68,6 +68,7 @@ OpenAPI is available in development at `/openapi/v1.json`. Health checks are ava
 - `POST /api/profiles/{profileId}/media`
 - `GET /api/profiles/{profileId}/posts`
 - `POST /api/profiles/{profileId}/posts`
+- `POST /api/profiles/{profileId}/posts/{postId}/publish`
 - `POST /api/profiles/{profileId}/posts/{postId}/publish-now`
 - `POST /api/profiles/{profileId}/posts/{postId}/queue`
 - `GET /api/profiles/{profileId}/queue`
@@ -76,6 +77,8 @@ OpenAPI is available in development at `/openapi/v1.json`. Health checks are ava
 - `GET /api/profiles/{profileId}/history`
 
 Media upload currently uses local `wwwroot/uploads` storage for development and returns a public URL from the API host. Cloudinary or Supabase Storage can replace the local provider before production publishing.
+
+Mock publish now uses the configured `IPostPublisher` implementation, writes `post_history`, and marks the post as Posted or Failed. Real Meta publishing can replace the mock publisher later without changing the API contract.
 
 Dashboard currently returns real counts for draft, queued, posted, failed, pending queue status, and recent posts. Engagement metrics stay at zero until a real Meta analytics integration is added.
 
