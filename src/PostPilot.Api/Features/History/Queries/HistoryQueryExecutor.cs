@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using PostPilot.Api.Features.History.Dtos;
+using PostPilot.Api.Features.History;
+using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Database;
 
 namespace PostPilot.Api.Features.History.Queries;
@@ -13,9 +14,10 @@ public sealed class HistoryQueryExecutor
         _dbContext = dbContext;
     }
 
-    public async Task<IReadOnlyCollection<PostHistoryResponseDto>?> ExecuteAsync(
+    public async Task<object?> ExecuteAsync(
         Guid ownerUserId,
         Guid profileId,
+        HistoryQuery query,
         CancellationToken cancellationToken)
     {
         var profileExists = await _dbContext.Profiles
@@ -27,13 +29,13 @@ public sealed class HistoryQueryExecutor
             return null;
         }
 
-        return await _dbContext.PostHistory
+        var histories = _dbContext.PostHistory
             .AsNoTracking()
             .Include(x => x.Post)
-            .Where(x => !x.IsDeleted && x.Post != null && x.Post.ProfileId == profileId)
-            .OrderByDescending(x => x.CreatedAt)
-            .ThenByDescending(x => x.Id)
-            .Select(x => x.ToDto())
-            .ToListAsync(cancellationToken);
+            .ApplyProfileScope(profileId)
+            .ApplyFilters(query)
+            .ApplyDeterministicOrder();
+
+        return await histories.ToPageOrListAsync(query, x => x.ToDto(), cancellationToken);
     }
 }
