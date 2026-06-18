@@ -15,9 +15,6 @@ public sealed class PlannedRoutesController : ControllerBase
     [HttpPost("media")]
     [HttpPost("posts/preview")]
     [HttpPost("posts")]
-    [HttpGet("queue")]
-    [HttpPut("queue")]
-    [HttpPost("queue/post-next")]
     [HttpGet("history")]
     public IActionResult PlannedProfileRoute(Guid id)
         => StatusCode(StatusCodes.Status501NotImplemented);
@@ -28,7 +25,6 @@ public sealed class PlannedRoutesController : ControllerBase
         => StatusCode(StatusCodes.Status501NotImplemented);
 
     [HttpPost("posts/{postId:guid}/publish")]
-    [HttpPost("posts/{postId:guid}/queue")]
     public IActionResult PlannedPostRoute(Guid id, Guid postId)
         => StatusCode(StatusCodes.Status501NotImplemented);
 }
