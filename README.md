@@ -65,10 +65,13 @@ OpenAPI is available in development at `/openapi/v1.json`. Health checks are ava
 - `PUT /api/profiles/{profileId}/categories/{categoryId}`
 - `DELETE /api/profiles/{profileId}/categories/{categoryId}`
 - `POST /api/profiles/{profileId}/media`
+- `GET /api/profiles/{profileId}/dashboard`
 
 Media upload currently uses local `wwwroot/uploads` storage for development and returns a public URL from the API host. Cloudinary or Supabase Storage can replace the local provider before production publishing.
 
-Later post, queue, history, dashboard, and Meta publish routes are still planned.
+Dashboard returns basic content, post, queue, history, and recent history summaries for the selected profile.
+
+Later real Meta publish and advanced analytics routes are still planned.
 
 ## Verification
 
