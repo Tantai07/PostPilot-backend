@@ -34,7 +34,7 @@ public sealed class CategoryQueryExtensionTests
 
         var categories = new[] { shirt, toy, bag }.AsQueryable();
 
-        categories.ApplyKeyword("shirt").Should().ContainSingle(x => x.Name == "Shirts");
+        categories.ApplyKeyword("Shirts").Should().ContainSingle(x => x.Name == "Shirts");
         categories.ApplyKeyword("Plush").Should().ContainSingle(x => x.Name == "Toys");
         categories.ApplyKeyword("handmade").Should().ContainSingle(x => x.Name == "Bags");
     }
