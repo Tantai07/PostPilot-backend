@@ -20,7 +20,6 @@ src/
   PostPilot.Domain/
     Common/
     Entities/
-    Enums/
   PostPilot.Infrastructure/
     Auth/
     Database/
@@ -61,8 +60,12 @@ OpenAPI is available in development at `/openapi/v1.json`. Health checks are ava
 - `POST /api/auth/login`
 - `GET /api/profiles`
 - `POST /api/profiles`
+- `GET /api/profiles/{profileId}/categories`
+- `POST /api/profiles/{profileId}/categories`
+- `PUT /api/profiles/{profileId}/categories/{categoryId}`
+- `DELETE /api/profiles/{profileId}/categories/{categoryId}`
 
-Later feature routes are registered as protected placeholders returning `501 Not Implemented`.
+Later post, media, queue, history, dashboard, and Meta publish routes are still planned.
 
 ## Verification
 
