@@ -4,14 +4,13 @@ namespace PostPilot.Api.Features.Dashboard;
 
 public static class DashboardMetricBuilder
 {
-    public static IReadOnlyCollection<DashboardMetricDto> ToMetrics<TKey>(IEnumerable<IGrouping<TKey, object>> groups)
-        where TKey : notnull
+    public static IReadOnlyCollection<DashboardMetricDto> FromCounts(IEnumerable<(string Name, int Count)> counts)
     {
-        return groups
-            .Select(group => new DashboardMetricDto
+        return counts
+            .Select(count => new DashboardMetricDto
             {
-                Name = group.Key.ToString() ?? string.Empty,
-                Count = group.Count()
+                Name = count.Name,
+                Count = count.Count
             })
             .OrderBy(x => x.Name)
             .ToList();
