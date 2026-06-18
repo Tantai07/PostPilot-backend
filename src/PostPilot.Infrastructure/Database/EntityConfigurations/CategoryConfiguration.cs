@@ -13,6 +13,7 @@ public sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.Property(x => x.Name).HasMaxLength(120).IsRequired();
         builder.Property(x => x.Color).HasMaxLength(32).IsRequired();
         builder.Property(x => x.Description).HasMaxLength(500);
+        builder.Property(x => x.CaptionTemplate).HasMaxLength(1000);
         builder.HasOne(x => x.Profile).WithMany(x => x.Categories).HasForeignKey(x => x.ProfileId).OnDelete(DeleteBehavior.Restrict);
         builder.HasIndex(x => new { x.ProfileId, x.Name });
     }
