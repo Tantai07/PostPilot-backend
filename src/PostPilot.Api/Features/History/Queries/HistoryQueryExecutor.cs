@@ -27,13 +27,14 @@ public sealed class HistoryQueryExecutor
             return null;
         }
 
-        return await _dbContext.PostHistory
+        var histories = await _dbContext.PostHistory
             .AsNoTracking()
             .Include(x => x.Post)
             .Where(x => !x.IsDeleted && x.Post != null && x.Post.ProfileId == profileId)
             .OrderByDescending(x => x.CreatedAt)
             .ThenByDescending(x => x.Id)
-            .Select(x => x.ToDto())
             .ToListAsync(cancellationToken);
+
+        return histories.Select(x => x.ToDto()).ToList();
     }
 }
