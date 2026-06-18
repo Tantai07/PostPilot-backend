@@ -38,4 +38,14 @@ public sealed class Post : SoftDeleteEntity
     {
         _targets.Add(new PostTarget(Id, targetPlatform, targetAccountId));
     }
+
+    public void MarkQueued()
+    {
+        Status = PostStatus.Queued;
+    }
+
+    public void MarkPosted()
+    {
+        Status = PostStatus.Posted;
+    }
 }
