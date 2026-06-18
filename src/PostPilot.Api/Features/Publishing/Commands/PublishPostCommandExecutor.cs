@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PostPilot.Api.Features.Publishing;
 using PostPilot.Api.Features.Publishing.Dtos;
 using PostPilot.Domain.Entities;
 using PostPilot.Infrastructure.Database;
