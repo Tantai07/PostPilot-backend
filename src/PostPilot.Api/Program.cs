@@ -33,7 +33,8 @@ builder.Services
     .AddProfileFeature()
     .AddCategoryFeature()
     .AddMediaFeature()
-    .AddPostFeature();
+    .AddPostFeature()
+    .AddQueueFeature();
 
 var app = builder.Build();
 
