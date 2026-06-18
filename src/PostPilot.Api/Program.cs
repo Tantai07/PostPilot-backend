@@ -32,7 +32,8 @@ builder.Services
     .AddPostPilotAuth(builder.Configuration)
     .AddProfileFeature()
     .AddCategoryFeature()
-    .AddMediaFeature();
+    .AddMediaFeature()
+    .AddPostFeature();
 
 var app = builder.Build();
 
