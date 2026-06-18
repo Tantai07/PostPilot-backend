@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PostPilot.Api.Features.Categories;
 using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Database;
 
