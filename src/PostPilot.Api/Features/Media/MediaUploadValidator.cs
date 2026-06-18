@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace PostPilot.Api.Features.Media;
 
 public static class MediaUploadValidator
