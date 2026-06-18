@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace PostPilot.Api.Features.Media.Storage;
 
 public interface IMediaStorageService
