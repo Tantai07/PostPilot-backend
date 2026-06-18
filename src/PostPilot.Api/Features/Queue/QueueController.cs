@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PostPilot.Api.Features.Queue.Commands;
 using PostPilot.Api.Features.Queue.Dtos;
 using PostPilot.Api.Features.Queue.Queries;
+using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Auth;
 
 namespace PostPilot.Api.Features.Queue;
@@ -39,6 +40,12 @@ public sealed class QueueController : ControllerBase
         if (currentUser.UserId is null)
         {
             return Unauthorized();
+        }
+
+        if (request.QueueItemIds.Any(x => x == Guid.Empty) || request.QueueItemIds.Count != request.QueueItemIds.Distinct().Count())
+        {
+            ModelState.AddModelError(nameof(request.QueueItemIds), "Queue item ids must be unique and non-empty.");
+            return ValidationProblem(ModelState);
         }
 
         var response = await command.ExecuteAsync(currentUser.UserId.Value, profileId, request, cancellationToken);
