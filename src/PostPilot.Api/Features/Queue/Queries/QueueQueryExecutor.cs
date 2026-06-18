@@ -28,14 +28,15 @@ public sealed class QueueQueryExecutor
             return null;
         }
 
-        return await _dbContext.PostQueueItems
+        var queueItems = await _dbContext.PostQueueItems
             .AsNoTracking()
             .Include(x => x.Post)
                 .ThenInclude(x => x!.Targets)
             .Where(x => x.ProfileId == profileId && !x.IsDeleted && x.Status == QueueItemStatus.Pending)
             .OrderBy(x => x.SortOrder)
             .ThenBy(x => x.CreatedAt)
-            .Select(x => x.ToDto())
             .ToListAsync(cancellationToken);
+
+        return queueItems.Select(x => x.ToDto()).ToList();
     }
 }
