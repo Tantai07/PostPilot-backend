@@ -27,7 +27,6 @@ public sealed class PlannedRoutesController : ControllerBase
     public IActionResult PlannedCategoryRoute(Guid id, Guid catId)
         => StatusCode(StatusCodes.Status501NotImplemented);
 
-    [HttpPost("posts/{postId:guid}/publish")]
     [HttpPost("posts/{postId:guid}/queue")]
     public IActionResult PlannedPostRoute(Guid id, Guid postId)
         => StatusCode(StatusCodes.Status501NotImplemented);
