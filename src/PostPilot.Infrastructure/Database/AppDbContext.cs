@@ -21,6 +21,7 @@ public sealed class AppDbContext : DbContext
     public DbSet<MetaToken> MetaTokens => Set<MetaToken>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<CategoryTag> CategoryTags => Set<CategoryTag>();
+    public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
     public DbSet<Post> Posts => Set<Post>();
     public DbSet<PostMedia> PostMedia => Set<PostMedia>();
     public DbSet<PostTarget> PostTargets => Set<PostTarget>();
