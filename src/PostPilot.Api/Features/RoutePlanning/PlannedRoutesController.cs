@@ -12,7 +12,6 @@ public sealed class PlannedRoutesController : ControllerBase
     [HttpGet("dashboard")]
     [HttpGet("categories")]
     [HttpPost("categories")]
-    [HttpPost("media")]
     [HttpPost("posts/preview")]
     [HttpPost("posts")]
     [HttpGet("queue")]
