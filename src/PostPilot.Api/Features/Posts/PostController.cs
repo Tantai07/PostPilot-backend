@@ -35,4 +35,23 @@ public sealed class PostController : ControllerBase
         var response = await command.ExecuteAsync(currentUser.UserId.Value, profileId, request, cancellationToken);
         return response is null ? NotFound() : CreatedAtAction(nameof(CreateDraft), new { profileId }, response);
     }
+
+    [HttpPost("{postId:guid}/publish-now")]
+    [ProducesResponseType(typeof(PostResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PostResponseDto>> PublishNow(
+        Guid profileId,
+        Guid postId,
+        [FromServices] PublishPostNowCommandExecutor command,
+        [FromServices] ICurrentUserContext currentUser,
+        CancellationToken cancellationToken)
+    {
+        if (currentUser.UserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var response = await command.ExecuteAsync(currentUser.UserId.Value, profileId, postId, cancellationToken);
+        return response is null ? NotFound() : Ok(response);
+    }
 }
