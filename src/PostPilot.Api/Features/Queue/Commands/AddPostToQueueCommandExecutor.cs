@@ -19,6 +19,7 @@ public sealed class AddPostToQueueCommandExecutor
         Guid ownerUserId,
         Guid profileId,
         Guid postId,
+        DateTimeOffset? scheduledAt,
         CancellationToken cancellationToken)
     {
         var post = await _dbContext.Posts
@@ -58,7 +59,7 @@ public sealed class AddPostToQueueCommandExecutor
             .MaxAsync(cancellationToken) ?? 0;
 
         post.MarkQueued();
-        var queueItem = new PostQueueItem(profileId, postId, nextSortOrder + 1)
+        var queueItem = new PostQueueItem(profileId, postId, nextSortOrder + 1, scheduledAt)
         {
             CreatedBy = ownerUserId
         };
