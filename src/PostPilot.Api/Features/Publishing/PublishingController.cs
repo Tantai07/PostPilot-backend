@@ -9,10 +9,11 @@ namespace PostPilot.Api.Features.Publishing;
 
 [ApiController]
 [Authorize(Policy = AuthorizationPolicies.AdminOnly)]
-[Route("api/profiles/{profileId:guid}/posts/{postId:guid}/publish")]
+[Route("api/profiles/{profileId:guid}/posts/{postId:guid}")]
 public sealed class PublishingController : ControllerBase
 {
-    [HttpPost]
+    [HttpPost("publish")]
+    [HttpPost("publish-now")]
     [ProducesResponseType(typeof(PublishPostResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
