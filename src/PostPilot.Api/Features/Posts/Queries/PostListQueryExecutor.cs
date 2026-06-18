@@ -46,12 +46,13 @@ public sealed class PostListQueryExecutor
             posts = posts.Where(x => x.Caption.Contains(keyword));
         }
 
-        return await posts
+        var entities = await posts
             .OrderByDescending(x => x.UpdatedAt ?? x.CreatedAt)
             .ThenByDescending(x => x.Id)
             .Take(query.PageSize ?? 50)
-            .Select(x => x.ToDto())
             .ToListAsync(cancellationToken);
+
+        return entities.Select(x => x.ToDto()).ToList();
     }
 
     private static bool TryParseStatus(string? value, out PostStatus status)
