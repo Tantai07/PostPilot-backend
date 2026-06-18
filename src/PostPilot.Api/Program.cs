@@ -35,7 +35,8 @@ builder.Services
     .AddMediaFeature()
     .AddPostFeature()
     .AddQueueFeature()
-    .AddPublishingFeature();
+    .AddPublishingFeature()
+    .AddHistoryFeature();
 
 var app = builder.Build();
 
