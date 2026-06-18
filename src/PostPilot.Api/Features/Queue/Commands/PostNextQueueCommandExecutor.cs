@@ -28,14 +28,15 @@ public sealed class PostNextQueueCommandExecutor
             return null;
         }
 
-        var nextItem = await _dbContext.PostQueueItems
+        var pendingItems = await _dbContext.PostQueueItems
             .Include(x => x.Post)
                 .ThenInclude(x => x!.Targets)
             .Where(x => x.ProfileId == profileId && !x.IsDeleted && x.Status == QueueItemStatus.Pending)
             .OrderBy(x => x.SortOrder)
             .ThenBy(x => x.CreatedAt)
-            .FirstOrDefaultAsync(cancellationToken);
+            .ToListAsync(cancellationToken);
 
+        var nextItem = pendingItems.FirstOrDefault();
         if (nextItem is null)
         {
             return null;
@@ -43,6 +44,12 @@ public sealed class PostNextQueueCommandExecutor
 
         nextItem.MarkPosted();
         nextItem.Post?.MarkPosted();
+
+        for (var index = 0; index < pendingItems.Skip(1).Count(); index++)
+        {
+            pendingItems[index + 1].MoveTo(index + 1);
+        }
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return nextItem.ToDto();
