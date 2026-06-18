@@ -49,7 +49,7 @@ public sealed class PostListQueryExecutor
         return await posts
             .OrderByDescending(x => x.UpdatedAt ?? x.CreatedAt)
             .ThenByDescending(x => x.Id)
-            .Take(query.PageSize)
+            .Take(query.PageSize ?? 50)
             .Select(x => x.ToDto())
             .ToListAsync(cancellationToken);
     }
