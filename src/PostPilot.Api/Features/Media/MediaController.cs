@@ -18,7 +18,7 @@ public sealed class MediaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MediaUploadResponseDto>> Upload(
         Guid profileId,
-        IFormFile file,
+        [FromForm] IFormFile? file,
         [FromServices] UploadMediaCommandExecutor command,
         [FromServices] ICurrentUserContext currentUser,
         CancellationToken cancellationToken)
