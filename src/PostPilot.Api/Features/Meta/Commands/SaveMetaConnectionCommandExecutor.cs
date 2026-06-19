@@ -54,8 +54,8 @@ public sealed class SaveMetaConnectionCommandExecutor
         return new MetaConnectionResponseDto
         {
             IsConnected = true,
-            FacebookPage = ToDto(facebook),
-            InstagramBusiness = instagram is null ? null : ToDto(instagram)
+            FacebookPage = ToDto(facebook, request.ExpiresAt),
+            InstagramBusiness = instagram is null ? null : ToDto(instagram, request.ExpiresAt)
         };
     }
 
@@ -90,9 +90,8 @@ public sealed class SaveMetaConnectionCommandExecutor
         current.Update(encoded, expiresAt);
     }
 
-    private static ConnectedSocialAccountDto ToDto(SocialAccount account)
+    private static ConnectedSocialAccountDto ToDto(SocialAccount account, DateTimeOffset expiresAt)
     {
-        var expiresAt = account.MetaToken?.ExpiresAt;
         return new ConnectedSocialAccountDto
         {
             Id = account.Id,
@@ -102,7 +101,7 @@ public sealed class SaveMetaConnectionCommandExecutor
             DisplayName = account.DisplayName,
             HasCredential = true,
             ExpiresAt = expiresAt,
-            IsExpired = expiresAt is not null && expiresAt <= DateTimeOffset.UtcNow
+            IsExpired = expiresAt <= DateTimeOffset.UtcNow
         };
     }
 }
