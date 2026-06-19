@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PostPilot.Api.Features.Queue.Commands;
 using PostPilot.Api.Features.Queue.Dtos;
+using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Auth;
 
 namespace PostPilot.Api.Features.Queue;
