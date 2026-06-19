@@ -43,6 +43,18 @@ POSTPILOT_JWT_AUDIENCE
 POSTPILOT_JWT_EXPIRATION_MINUTES
 ```
 
+Optional Cloudinary media storage configuration:
+
+```text
+POSTPILOT_STORAGE_PROVIDER=Cloudinary
+POSTPILOT_CLOUDINARY_CLOUD_NAME
+POSTPILOT_CLOUDINARY_API_KEY
+POSTPILOT_CLOUDINARY_API_SECRET
+POSTPILOT_CLOUDINARY_FOLDER=postpilot
+```
+
+If `POSTPILOT_STORAGE_PROVIDER` is not `Cloudinary`, or the Cloudinary credentials are missing, media upload falls back to local `wwwroot/uploads` storage for development.
+
 Create user records directly in the database. The API does not seed users at startup.
 
 Passwords must be stored as hashes using the same format as `Pbkdf2PasswordHasher`.
@@ -68,7 +80,6 @@ OpenAPI is available in development at `/openapi/v1.json`. Health checks are ava
 - `POST /api/profiles/{profileId}/media`
 - `GET /api/profiles/{profileId}/posts`
 - `POST /api/profiles/{profileId}/posts`
-- `POST /api/profiles/{profileId}/posts/{postId}/publish`
 - `POST /api/profiles/{profileId}/posts/{postId}/publish-now`
 - `POST /api/profiles/{profileId}/posts/{postId}/queue`
 - `GET /api/profiles/{profileId}/queue`
@@ -76,7 +87,7 @@ OpenAPI is available in development at `/openapi/v1.json`. Health checks are ava
 - `POST /api/profiles/{profileId}/queue/post-next`
 - `GET /api/profiles/{profileId}/history`
 
-Media upload currently uses local `wwwroot/uploads` storage for development and returns a public URL from the API host. Cloudinary or Supabase Storage can replace the local provider before production publishing.
+Media upload supports local development storage and Cloudinary. Use Cloudinary before real Meta publishing because Meta must fetch a public image URL from the internet.
 
 Mock publish currently uses the configured `IPostPublisher` implementation and writes `post_history`; a real Meta publisher can replace the mock publisher later.
 
