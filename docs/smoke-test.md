@@ -33,7 +33,25 @@ Expected:
 - Vite starts without console compile errors.
 - `VITE_POSTPILOT_API_URL` points to the local API when needed.
 
-## 3. End-to-end smoke flow
+## 3. Cloudinary verification
+
+Set these variables when testing a public image URL for Meta preparation:
+
+```bash
+export POSTPILOT_STORAGE_PROVIDER=Cloudinary
+export POSTPILOT_CLOUDINARY_CLOUD_NAME=your-cloud-name
+export POSTPILOT_CLOUDINARY_API_KEY=your-api-key
+export POSTPILOT_CLOUDINARY_API_SECRET=your-api-secret
+export POSTPILOT_CLOUDINARY_FOLDER=postpilot
+```
+
+Expected:
+
+- Uploading an image returns `storageProvider: Cloudinary`.
+- The returned `publicUrl` is an HTTPS Cloudinary URL.
+- The `publicUrl` opens from another browser or device without logging in.
+
+## 4. End-to-end smoke flow
 
 1. Login with the seed admin account.
 2. Select an existing profile or create a new one.
@@ -50,7 +68,7 @@ Expected:
 13. Open Post History and confirm a Posted item appears with a mock external ID.
 14. Open Dashboard and confirm Draft, Queued, Posted, Failed, Queue Status, and Recent Posts reflect the new data.
 
-## 4. Negative checks
+## 5. Negative checks
 
 - Uploading an unsupported file type should return a validation error.
 - Uploading an image over 10 MB should return a validation error.
@@ -58,7 +76,7 @@ Expected:
 - Calling protected endpoints without a bearer token should return unauthorized.
 - Re-adding the same post to Queue should not create a duplicate pending queue item.
 
-## 5. Known MVP limits
+## 6. Known MVP limits
 
 - Publish uses the mock provider only.
 - Local uploads are not suitable for real Meta publishing because public URLs must be accessible from the internet.
