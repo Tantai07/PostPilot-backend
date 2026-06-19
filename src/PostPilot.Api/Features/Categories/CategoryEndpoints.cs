@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PostPilot.Api.Features.Categories.Commands;
 using PostPilot.Api.Features.Categories.Dtos;
 using PostPilot.Api.Features.Categories.Queries;
+using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Auth;
 
 namespace PostPilot.Api.Features.Categories;
