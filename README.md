@@ -80,15 +80,18 @@ OpenAPI is available in development at `/openapi/v1.json`. Health checks are ava
 - `POST /api/profiles/{profileId}/media`
 - `GET /api/profiles/{profileId}/posts`
 - `POST /api/profiles/{profileId}/posts`
-- `POST /api/profiles/{profileId}/posts/{postId}/publish`
 - `POST /api/profiles/{profileId}/posts/{postId}/publish-now`
 - `POST /api/profiles/{profileId}/posts/{postId}/queue`
 - `GET /api/profiles/{profileId}/queue`
 - `PUT /api/profiles/{profileId}/queue`
 - `POST /api/profiles/{profileId}/queue/post-next`
 - `GET /api/profiles/{profileId}/history`
+- `GET /api/profiles/{profileId}/meta-connection`
+- `PUT /api/profiles/{profileId}/meta-connection`
 
 Media upload supports local development storage and Cloudinary. Use Cloudinary before real Meta publishing because Meta must fetch a public image URL from the internet.
+
+Meta connection stores Facebook Page, optional Instagram Business identifiers, and a protected server-side credential. The protected value is never returned by the API.
 
 Mock publish currently uses the configured `IPostPublisher` implementation and writes `post_history`; a real Meta publisher can replace the mock publisher later.
 
