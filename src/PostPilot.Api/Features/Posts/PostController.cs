@@ -56,6 +56,7 @@ public sealed class PostController : ControllerBase
         return response is null ? NotFound() : CreatedAtAction(nameof(CreateDraft), new { profileId }, response);
     }
 
+    [HttpPost("{postId:guid}/publish")]
     [HttpPost("{postId:guid}/publish-now")]
     [ProducesResponseType(typeof(PostResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
