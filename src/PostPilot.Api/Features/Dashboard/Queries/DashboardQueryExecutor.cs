@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PostPilot.Api.Features.Dashboard.Dtos;
+using PostPilot.Api.Features.Posts;
 using PostPilot.Domain.Enums;
 using PostPilot.Infrastructure.Database;
 
