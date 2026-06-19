@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PostPilot.Api.Features.Media.Dtos;
+using PostPilot.Api.Features.Media.Storage;
 using PostPilot.Domain.Entities;
-using PostPilot.Domain.Enums;
 using PostPilot.Infrastructure.Database;
 
 namespace PostPilot.Api.Features.Media.Commands;
@@ -18,12 +18,12 @@ public sealed class UploadMediaCommandExecutor
 
     private const long MaxFileSizeBytes = 10 * 1024 * 1024;
     private readonly AppDbContext _dbContext;
-    private readonly IWebHostEnvironment _environment;
+    private readonly IMediaStorageService _storageService;
 
-    public UploadMediaCommandExecutor(AppDbContext dbContext, IWebHostEnvironment environment)
+    public UploadMediaCommandExecutor(AppDbContext dbContext, IMediaStorageService storageService)
     {
         _dbContext = dbContext;
-        _environment = environment;
+        _storageService = storageService;
     }
 
     public async Task<MediaUploadResponseDto?> ExecuteAsync(
@@ -52,42 +52,15 @@ public sealed class UploadMediaCommandExecutor
             throw new InvalidOperationException("Only JPG, PNG, WebP, and GIF images are supported.");
         }
 
-        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        if (string.IsNullOrWhiteSpace(extension))
-        {
-            extension = file.ContentType.ToLowerInvariant() switch
-            {
-                "image/jpeg" => ".jpg",
-                "image/png" => ".png",
-                "image/webp" => ".webp",
-                "image/gif" => ".gif",
-                _ => ".img"
-            };
-        }
-
-        var safeFileName = $"{Guid.NewGuid():N}{extension}";
-        var relativeDirectory = Path.Combine("uploads", profileId.ToString("N"));
-        var webRootPath = _environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot");
-        var directoryPath = Path.Combine(webRootPath, relativeDirectory);
-        Directory.CreateDirectory(directoryPath);
-
-        var filePath = Path.Combine(directoryPath, safeFileName);
-        await using (var stream = File.Create(filePath))
-        {
-            await file.CopyToAsync(stream, cancellationToken);
-        }
-
-        var relativeUrl = $"/uploads/{profileId:N}/{safeFileName}";
-        var publicUrl = $"{request.Scheme}://{request.Host}{relativeUrl}";
-
+        var storageResult = await _storageService.UploadAsync(profileId, file, request, cancellationToken);
         var media = new MediaAsset(
             profileId,
-            StorageProvider.Local,
-            relativeUrl,
-            publicUrl,
-            file.FileName,
-            file.ContentType,
-            file.Length)
+            storageResult.Provider,
+            storageResult.Url,
+            storageResult.PublicUrl,
+            storageResult.FileName,
+            storageResult.MimeType,
+            storageResult.SizeBytes)
         {
             CreatedBy = ownerUserId
         };
