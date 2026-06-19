@@ -80,6 +80,7 @@ OpenAPI is available in development at `/openapi/v1.json`. Health checks are ava
 - `POST /api/profiles/{profileId}/media`
 - `GET /api/profiles/{profileId}/posts`
 - `POST /api/profiles/{profileId}/posts`
+- `POST /api/profiles/{profileId}/posts/{postId}/publish`
 - `POST /api/profiles/{profileId}/posts/{postId}/publish-now`
 - `POST /api/profiles/{profileId}/posts/{postId}/queue`
 - `GET /api/profiles/{profileId}/queue`
