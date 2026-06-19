@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PostPilot.Api.Features.History.Dtos;
 using PostPilot.Api.Features.History.Queries;
+using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Auth;
 
 namespace PostPilot.Api.Features.History;
