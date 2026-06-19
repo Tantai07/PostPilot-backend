@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PostPilot.Api.Features.Meta.Commands;
 using PostPilot.Api.Features.Meta.Dtos;
 using PostPilot.Api.Features.Meta.Queries;
+using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Auth;
 
 namespace PostPilot.Api.Features.Meta;
