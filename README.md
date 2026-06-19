@@ -55,6 +55,15 @@ POSTPILOT_CLOUDINARY_FOLDER=postpilot
 
 If `POSTPILOT_STORAGE_PROVIDER` is not `Cloudinary`, or the Cloudinary credentials are missing, media upload falls back to local `wwwroot/uploads` storage for development.
 
+Optional publish provider configuration:
+
+```text
+POSTPILOT_PUBLISH_PROVIDER=Meta
+POSTPILOT_META_GRAPH_API_VERSION=v20.0
+```
+
+If `POSTPILOT_PUBLISH_PROVIDER` is not `Meta`, PostPilot uses the mock publisher. Meta publisher currently supports Facebook Page image publishing only.
+
 Create user records directly in the database. The API does not seed users at startup.
 
 Passwords must be stored as hashes using the same format as `Pbkdf2PasswordHasher`.
@@ -93,7 +102,7 @@ Media upload supports local development storage and Cloudinary. Use Cloudinary b
 
 Meta connection stores Facebook Page, optional Instagram Business identifiers, and a protected server-side credential. The protected value is never returned by the API.
 
-Mock publish currently uses the configured `IPostPublisher` implementation and writes `post_history`; a real Meta publisher can replace the mock publisher later.
+Publishing uses mock mode by default. Set `POSTPILOT_PUBLISH_PROVIDER=Meta` to publish Facebook Page image posts through the Meta Graph API using the saved Meta connection.
 
 Dashboard currently returns real counts for draft, queued, posted, failed, pending queue status, and recent posts. Engagement metrics stay at zero until a real Meta analytics integration is added.
 
