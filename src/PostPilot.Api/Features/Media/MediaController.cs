@@ -19,7 +19,7 @@ public sealed class MediaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MediaUploadResponseDto>> Upload(
         Guid profileId,
-        [FromForm] IFormFile? file,
+        [FromForm] MediaUploadRequestDto request,
         [FromServices] UploadMediaCommandExecutor command,
         [FromServices] ICurrentUserContext currentUser,
         CancellationToken cancellationToken)
@@ -29,7 +29,7 @@ public sealed class MediaController : ControllerBase
             return Unauthorized();
         }
 
-        if (file is null)
+        if (request.File is null)
         {
             return BadRequest("Image file is required.");
         }
@@ -39,7 +39,7 @@ public sealed class MediaController : ControllerBase
             var response = await command.ExecuteAsync(
                 currentUser.UserId.Value,
                 profileId,
-                file,
+                request.File,
                 Request,
                 cancellationToken);
 
