@@ -9,5 +9,6 @@ public enum SocialPlatform
     Etsy = 5,
     Lazada = 6,
     Shopee = 7,
-    TikTokShop = 8
+    TikTokShop = 8,
+    TikTok = 9
 }

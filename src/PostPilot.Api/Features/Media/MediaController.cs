@@ -13,6 +13,8 @@ public sealed class MediaController : ControllerBase
 {
     [HttpPost]
     [Consumes("multipart/form-data")]
+    [RequestSizeLimit(105_906_176)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 105_906_176)]
     [ProducesResponseType(typeof(MediaUploadResponseDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

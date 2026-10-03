@@ -17,6 +17,11 @@ coverage/
 .env
 .env.*
 !.env.example
+secrets/
+**/secrets/
+*.secrets.json
+*.pfx
+*.key
 appsettings.Local.json
 src/**/appsettings.Local.json
 src/PostPilot.Api/wwwroot/uploads/

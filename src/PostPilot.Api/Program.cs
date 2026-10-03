@@ -10,6 +10,34 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
 
+var renderPort = builder.Configuration["PORT"];
+if (!string.IsNullOrWhiteSpace(renderPort))
+{
+    if (!int.TryParse(renderPort, out var port) || port is < 1 or > 65535)
+    {
+        throw new InvalidOperationException("PORT must be a number between 1 and 65535.");
+    }
+
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
+
+var configuredFrontendOrigin = builder.Configuration["POSTPILOT_FRONTEND_ORIGIN"]?.TrimEnd('/');
+var allowedFrontendOrigins = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+{
+    "https://postpilotbytantai.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174"
+};
+
+if (!string.IsNullOrWhiteSpace(configuredFrontendOrigin))
+{
+    allowedFrontendOrigins.Add(configuredFrontendOrigin);
+}
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
@@ -18,16 +46,10 @@ builder.Services.AddHealthChecks();
 builder.Services.AddScoped<DevelopmentUserSeeder>();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(ApiConstants.LocalFrontendCorsPolicy, policy =>
+    options.AddPolicy(ApiConstants.FrontendCorsPolicy, policy =>
     {
         policy
-            .WithOrigins(
-                "http://localhost:3000",
-                "http://localhost:5173",
-                "http://localhost:5174",
-                "http://127.0.0.1:3000",
-                "http://127.0.0.1:5173",
-                "http://127.0.0.1:5174")
+            .WithOrigins(allowedFrontendOrigins.ToArray())
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -78,9 +100,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseStaticFiles();
-app.UseCors(ApiConstants.LocalFrontendCorsPolicy);
+app.UseCors(ApiConstants.FrontendCorsPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
 

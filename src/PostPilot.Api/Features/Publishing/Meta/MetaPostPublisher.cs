@@ -46,14 +46,29 @@ public sealed class MetaPostPublisher : IPostPublisher
             return new PublishResult(platform, false, null, "Post was not found.");
         }
 
-        var media = post.Media
+        var postMedia = post.Media
             .Where(x => !x.IsDeleted && !string.IsNullOrWhiteSpace(x.PublicUrl))
             .OrderBy(x => x.SortOrder)
-            .FirstOrDefault();
+            .ToList();
+
+        if (postMedia.Count > 1)
+        {
+            return new PublishResult(platform, false, null, "Facebook publishing currently supports one image per post. Multiple media files can be saved as a draft.");
+        }
+
+        var media = postMedia.FirstOrDefault();
 
         if (media is null)
         {
             return new PublishResult(platform, false, null, "Facebook Page publish requires at least one uploaded public image URL.");
+        }
+
+        var isVideo = await _dbContext.MediaAssets.AsNoTracking().AnyAsync(
+            x => x.ProfileId == post.ProfileId && x.PublicUrl == media.PublicUrl && x.MimeType.StartsWith("video/"),
+            cancellationToken);
+        if (isVideo)
+        {
+            return new PublishResult(platform, false, null, "Video publishing is not configured. Videos can be saved as a draft.");
         }
 
         var account = await _dbContext.SocialAccounts

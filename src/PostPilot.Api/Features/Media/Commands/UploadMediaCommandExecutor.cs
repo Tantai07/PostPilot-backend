@@ -13,7 +13,10 @@ public sealed class UploadMediaCommandExecutor
         "image/jpeg",
         "image/png",
         "image/webp",
-        "image/gif"
+        "image/gif",
+        "video/mp4",
+        "video/webm",
+        "video/quicktime"
     };
 
     private const long MaxFileSizeBytes = 10 * 1024 * 1024;
@@ -42,14 +45,15 @@ public sealed class UploadMediaCommandExecutor
             return null;
         }
 
-        if (file.Length <= 0 || file.Length > MaxFileSizeBytes)
+        var maxSize = file.ContentType.StartsWith("video/", StringComparison.OrdinalIgnoreCase) ? 100 * 1024 * 1024 : MaxFileSizeBytes;
+        if (file.Length <= 0 || file.Length > maxSize)
         {
-            throw new InvalidOperationException("Image must be between 1 byte and 10 MB.");
+            throw new InvalidOperationException("Images must be at most 10 MB; videos at most 100 MB. Empty files are not supported.");
         }
 
         if (!AllowedMimeTypes.Contains(file.ContentType))
         {
-            throw new InvalidOperationException("Only JPG, PNG, WebP, and GIF images are supported.");
+            throw new InvalidOperationException("Only JPG, PNG, WebP, GIF, MP4, WebM, and MOV files are supported.");
         }
 
         var storageResult = await _storageService.UploadAsync(profileId, file, request, cancellationToken);

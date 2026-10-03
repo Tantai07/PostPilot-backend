@@ -59,7 +59,7 @@ public sealed class CreatePostDraftCommandExecutor
             CreatedBy = ownerUserId
         };
 
-        foreach (var media in mediaAssets.Select((media, index) => new { media, index }))
+        foreach (var media in request.MediaIds.Distinct().Select(id => mediaAssets.Single(asset => asset.Id == id)).Select((media, index) => new { media, index }))
         {
             post.AddMedia(
                 media.media.StorageProvider,
@@ -95,6 +95,15 @@ public sealed class CreatePostDraftCommandExecutor
             "facebook page" or "facebookpage" => PostTargetPlatform.FacebookPage,
             "instagram feed" or "instagramfeed" => PostTargetPlatform.InstagramFeed,
             "instagram story" or "instagramstory" => PostTargetPlatform.InstagramStory,
+            "facebook story" or "facebookstory" => PostTargetPlatform.FacebookStory,
+            "x" => PostTargetPlatform.X,
+            "tiktok" => PostTargetPlatform.TikTok,
+            "tiktok story" or "tiktokstory" => PostTargetPlatform.TikTokStory,
+            "tiktok shop" or "tiktokshop" => PostTargetPlatform.TikTokShop,
+            "ebay" => PostTargetPlatform.EBay,
+            "etsy" => PostTargetPlatform.Etsy,
+            "lazada" => PostTargetPlatform.Lazada,
+            "shopee" => PostTargetPlatform.Shopee,
             _ => null
         };
     }

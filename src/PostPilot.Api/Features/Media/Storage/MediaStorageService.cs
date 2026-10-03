@@ -100,7 +100,8 @@ public sealed class MediaStorageService : IMediaStorageService
         form.Add(new StringContent(publicId), "public_id");
         form.Add(new StringContent(signature), "signature");
 
-        var url = $"https://api.cloudinary.com/v1_1/{_options.CloudinaryCloudName}/image/upload";
+        var resourceType = file.ContentType.StartsWith("video/", StringComparison.OrdinalIgnoreCase) ? "video" : "image";
+        var url = $"https://api.cloudinary.com/v1_1/{_options.CloudinaryCloudName}/{resourceType}/upload";
         using var response = await _httpClient.PostAsync(url, form, cancellationToken);
         var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
@@ -148,6 +149,9 @@ public sealed class MediaStorageService : IMediaStorageService
             "image/png" => ".png",
             "image/webp" => ".webp",
             "image/gif" => ".gif",
+            "video/mp4" => ".mp4",
+            "video/webm" => ".webm",
+            "video/quicktime" => ".mov",
             _ => ".img"
         };
     }

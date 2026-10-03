@@ -12,7 +12,7 @@ public static class AuthCookie
         {
             HttpOnly = true,
             Secure = !environment.IsDevelopment(),
-            SameSite = SameSiteMode.Strict,
+            SameSite = environment.IsDevelopment() ? SameSiteMode.Strict : SameSiteMode.None,
             Path = "/",
             Expires = expiresAt,
             IsEssential = true
