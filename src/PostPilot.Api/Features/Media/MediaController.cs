@@ -2,13 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PostPilot.Api.Features.Media.Commands;
 using PostPilot.Api.Features.Media.Dtos;
-using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Auth;
 
 namespace PostPilot.Api.Features.Media;
 
 [ApiController]
-[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
+[Authorize]
 [Route("api/profiles/{profileId:guid}/media")]
 public sealed class MediaController : ControllerBase
 {

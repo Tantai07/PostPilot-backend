@@ -94,7 +94,7 @@ public sealed class MetaPostPublisher : IPostPublisher
             ["access_token"] = credential
         });
 
-        var apiVersion = string.IsNullOrWhiteSpace(_options.GraphApiVersion) ? "v20.0" : _options.GraphApiVersion.Trim();
+        var apiVersion = string.IsNullOrWhiteSpace(_options.GraphApiVersion) ? "v24.0" : _options.GraphApiVersion.Trim();
         var endpoint = $"https://graph.facebook.com/{apiVersion}/{pageId}/photos";
         using var response = await _httpClient.PostAsync(endpoint, form, cancellationToken);
         var body = await response.Content.ReadAsStringAsync(cancellationToken);

@@ -11,7 +11,10 @@ internal static class EntityConfigurationExtensions
     {
         builder.HasKey(x => x.Id);
         builder.Property(x => x.CreatedAt).IsRequired();
-        builder.Property(x => x.RowVersion).IsRowVersion();
+        builder.Property(x => x.RowVersion)
+            .IsRequired()
+            .IsConcurrencyToken()
+            .ValueGeneratedNever();
         builder.HasQueryFilter(x => !x.IsDeleted);
         builder.HasIndex(x => x.CreatedAt);
     }

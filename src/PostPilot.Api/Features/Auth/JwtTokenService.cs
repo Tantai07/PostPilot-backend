@@ -43,7 +43,6 @@ public sealed class JwtTokenService : IJwtTokenService
         return new LoginResponseDto
         {
             AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-            TokenType = "Bearer",
             ExpiresAt = expiresAt,
             User = user.ToDto()
         };

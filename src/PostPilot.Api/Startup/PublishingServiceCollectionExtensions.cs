@@ -16,7 +16,7 @@ public static class PublishingServiceCollectionExtensions
                     ?? "Mock";
                 options.GraphApiVersion = configuration["POSTPILOT_META_GRAPH_API_VERSION"]
                     ?? configuration["Meta:GraphApiVersion"]
-                    ?? "v20.0";
+                    ?? "v24.0";
             });
 
         services.AddScoped<MockPostPublisher>();

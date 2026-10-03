@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using PostPilot.Api.Features.Profiles.Commands;
 using PostPilot.Api.Features.Profiles.Dtos;
 using PostPilot.Api.Features.Profiles.Queries;
-using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Auth;
 
 namespace PostPilot.Api.Features.Profiles;
 
 [ApiController]
-[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
+[Authorize]
 [Route("api/profiles")]
 public sealed class ProfilesController : ControllerBase
 {
@@ -44,5 +43,44 @@ public sealed class ProfilesController : ControllerBase
 
         var response = await command.ExecuteAsync(currentUser.UserId.Value, request, cancellationToken);
         return CreatedAtAction(nameof(List), new { id = response.Id }, response);
+    }
+
+    [HttpPut("{profileId:guid}")]
+    [ProducesResponseType(typeof(ProfileResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ProfileResponseDto>> Update(
+        Guid profileId,
+        [FromBody] UpdateProfileRequestDto request,
+        [FromServices] UpdateProfileCommandExecutor command,
+        [FromServices] ICurrentUserContext currentUser,
+        CancellationToken cancellationToken)
+    {
+        if (currentUser.UserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var response = await command.ExecuteAsync(
+            currentUser.UserId.Value,
+            profileId,
+            request,
+            cancellationToken);
+
+        return response is null ? NotFound() : Ok(response);
+    }
+
+    [HttpDelete("{profileId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(
+        Guid profileId,
+        [FromServices] DeleteProfileCommandExecutor command,
+        [FromServices] ICurrentUserContext currentUser,
+        CancellationToken cancellationToken)
+    {
+        if (currentUser.UserId is null) return Unauthorized();
+        return await command.ExecuteAsync(currentUser.UserId.Value, profileId, cancellationToken)
+            ? NoContent()
+            : NotFound();
     }
 }

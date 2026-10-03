@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using PostPilot.Api.Features.Meta.Commands;
 using PostPilot.Api.Features.Meta.Dtos;
 using PostPilot.Api.Features.Meta.Queries;
-using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Auth;
 
 namespace PostPilot.Api.Features.Meta;
 
 [ApiController]
-[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
+[Authorize]
 [Route("api/profiles/{profileId:guid}/meta-connection")]
 public sealed class MetaConnectionController : ControllerBase
 {

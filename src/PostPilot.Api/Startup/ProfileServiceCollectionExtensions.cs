@@ -9,6 +9,8 @@ public static class ProfileServiceCollectionExtensions
     {
         services.AddScoped<ProfileQueryExecutor>();
         services.AddScoped<CreateProfileCommandExecutor>();
+        services.AddScoped<UpdateProfileCommandExecutor>();
+        services.AddScoped<DeleteProfileCommandExecutor>();
 
         return services;
     }

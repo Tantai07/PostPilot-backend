@@ -1,5 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using PostPilot.Api.Development;
 using PostPilot.Api.Shared;
 using PostPilot.Api.Startup;
+using PostPilot.Infrastructure.Database;
 using PostPilot.Infrastructure.Startup;
 using Scalar.AspNetCore;
 
@@ -12,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
+builder.Services.AddScoped<DevelopmentUserSeeder>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(ApiConstants.LocalFrontendCorsPolicy, policy =>
@@ -20,10 +24,13 @@ builder.Services.AddCors(options =>
             .WithOrigins(
                 "http://localhost:3000",
                 "http://localhost:5173",
+                "http://localhost:5174",
                 "http://127.0.0.1:3000",
-                "http://127.0.0.1:5173")
+                "http://127.0.0.1:5173",
+                "http://127.0.0.1:5174")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -38,9 +45,27 @@ builder.Services
     .AddPublishingFeature()
     .AddHistoryFeature()
     .AddDashboardFeature()
-    .AddMetaFeature();
+    .AddMetaFeature(builder.Configuration);
 
 var app = builder.Build();
+
+if (args.Contains("--seed-test-users", StringComparer.OrdinalIgnoreCase))
+{
+    if (!app.Environment.IsDevelopment())
+    {
+        throw new InvalidOperationException("Test users can only be seeded in the Development environment.");
+    }
+
+    await using var scope = app.Services.CreateAsyncScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+
+    var options = DevelopmentUserSeedOptions.FromConfiguration(app.Configuration);
+    var seeder = scope.ServiceProvider.GetRequiredService<DevelopmentUserSeeder>();
+    await seeder.SeedAsync(options);
+    Console.WriteLine("Development test users seeded successfully.");
+    return;
+}
 
 if (app.Environment.IsDevelopment())
 {

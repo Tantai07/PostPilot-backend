@@ -14,8 +14,13 @@ public static class InfrastructureServiceCollectionExtensions
         var configuredConnectionString = configuration.GetConnectionString("PostPilotDb");
         var connectionString = !string.IsNullOrWhiteSpace(configuredConnectionString)
             ? configuredConnectionString
-            : configuration["POSTPILOT_DATABASE_CONNECTION"]
-                ?? "Host=localhost;Port=5432;Database=postpilot;Username=postgres;Password=postgres";
+            : configuration["POSTPILOT_DATABASE_CONNECTION"];
+
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException(
+                "Database connection is not configured. Set ConnectionStrings:PostPilotDb or POSTPILOT_DATABASE_CONNECTION.");
+        }
 
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
         services.AddScoped<IPasswordHasher, Pbkdf2PasswordHasher>();

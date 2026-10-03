@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using PostPilot.Domain.Common;
 using PostPilot.Domain.Entities;
@@ -57,12 +58,14 @@ public sealed class AppDbContext : DbContext
             {
                 entry.Entity.CreatedAt = now;
                 entry.Entity.CreatedBy ??= userId;
+                entry.Entity.RowVersion = RandomNumberGenerator.GetBytes(16);
             }
 
             if (entry.State == EntityState.Modified)
             {
                 entry.Entity.UpdatedAt = now;
                 entry.Entity.UpdatedBy = userId;
+                entry.Entity.RowVersion = RandomNumberGenerator.GetBytes(16);
             }
         }
     }

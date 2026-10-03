@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <PostPilotSolution>$(MSBuildThisFileDirectory)build\PostPilot.slnx</PostPilotSolution>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="build\PostPilot.Run.cs" />
+  </ItemGroup>
+
+  <Target Name="BuildPostPilotSolution" BeforeTargets="Build">
+    <Exec Command="dotnet build &quot;$(PostPilotSolution)&quot;" />
+  </Target>
+</Project>

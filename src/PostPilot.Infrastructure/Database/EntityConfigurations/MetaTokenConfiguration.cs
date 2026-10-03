@@ -10,8 +10,10 @@ public sealed class MetaTokenConfiguration : IEntityTypeConfiguration<MetaToken>
     {
         builder.ToTable("meta_tokens");
         builder.ConfigureSoftDeleteEntity();
-        builder.Property(x => x.EncryptedAccessToken).HasMaxLength(4096).IsRequired();
+        builder.Property(x => x.EncryptedAccessToken).HasMaxLength(8192).IsRequired();
+        builder.Property(x => x.EncryptedRefreshToken).HasMaxLength(8192);
         builder.Property(x => x.ExpiresAt).IsRequired();
+        builder.Property(x => x.Scope).HasMaxLength(2048);
         builder.HasOne(x => x.SocialAccount).WithOne(x => x.MetaToken).HasForeignKey<MetaToken>(x => x.SocialAccountId).OnDelete(DeleteBehavior.Restrict);
         builder.HasIndex(x => x.SocialAccountId).IsUnique();
     }

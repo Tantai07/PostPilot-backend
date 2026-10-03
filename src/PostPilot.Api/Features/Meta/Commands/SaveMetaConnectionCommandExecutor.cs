@@ -83,11 +83,11 @@ public sealed class SaveMetaConnectionCommandExecutor
 
         if (current is null)
         {
-            _dbContext.MetaTokens.Add(new MetaToken(socialAccountId, encoded, expiresAt) { CreatedBy = ownerUserId });
+            _dbContext.MetaTokens.Add(new MetaToken(socialAccountId, encoded, null, expiresAt, null) { CreatedBy = ownerUserId });
             return;
         }
 
-        current.Update(encoded, expiresAt);
+        current.Update(encoded, null, expiresAt, null);
     }
 
     private static ConnectedSocialAccountDto ToDto(SocialAccount account, DateTimeOffset expiresAt)

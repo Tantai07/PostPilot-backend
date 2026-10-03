@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using PostPilot.Api.Features.Queue.Commands;
 using PostPilot.Api.Features.Queue.Dtos;
 using PostPilot.Api.Features.Queue.Queries;
-using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Auth;
 
 namespace PostPilot.Api.Features.Queue;
 
 [ApiController]
-[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
+[Authorize]
 [Route("api/profiles/{profileId:guid}/queue")]
 public sealed class QueueController : ControllerBase
 {

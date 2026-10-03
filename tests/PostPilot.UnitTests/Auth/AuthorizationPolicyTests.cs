@@ -15,7 +15,12 @@ public sealed class AuthorizationPolicyTests
     public async Task AdminOnlyPolicy_RequiresAdminRole()
     {
         var services = new ServiceCollection();
-        var configuration = new ConfigurationBuilder().Build();
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["POSTPILOT_JWT_SIGNING_KEY"] = "test-signing-key-with-at-least-32-characters"
+            })
+            .Build();
 
         services.AddPostPilotAuth(configuration);
 

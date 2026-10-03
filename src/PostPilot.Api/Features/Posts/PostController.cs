@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using PostPilot.Api.Features.Posts.Commands;
 using PostPilot.Api.Features.Posts.Dtos;
 using PostPilot.Api.Features.Posts.Queries;
-using PostPilot.Api.Shared;
 using PostPilot.Infrastructure.Auth;
 
 namespace PostPilot.Api.Features.Posts;
 
 [ApiController]
-[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
+[Authorize]
 [Route("api/profiles/{profileId:guid}/posts")]
 public sealed class PostController : ControllerBase
 {

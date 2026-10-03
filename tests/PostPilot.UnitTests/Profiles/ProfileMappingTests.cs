@@ -21,4 +21,16 @@ public sealed class ProfileMappingTests
         dto.DefaultTargets.Should().Be("FacebookPage");
         dto.UpdatedAt.Should().Be(profile.CreatedAt);
     }
+
+    [Fact]
+    public void Rename_UpdatesEditableProfileFields()
+    {
+        var profile = new Profile(Guid.NewGuid(), "Old name", "Old shop", "Facebook");
+
+        profile.Rename(" New name ", " New shop ", "Facebook, Etsy");
+
+        profile.Name.Should().Be("New name");
+        profile.WebsiteName.Should().Be("New shop");
+        profile.DefaultTargets.Should().Be("Facebook, Etsy");
+    }
 }

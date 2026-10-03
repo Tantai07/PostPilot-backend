@@ -1,0 +1,92 @@
+services:
+  postpilot-db:
+    image: postgres:16-alpine
+    container_name: postpilot-postgres
+    environment:
+      POSTGRES_DB: ${POSTPILOT_DB_NAME:-postpilot}
+      POSTGRES_USER: ${POSTPILOT_DB_USER:-postpilot}
+      POSTGRES_PASSWORD: ${POSTPILOT_DB_PASSWORD:?Set POSTPILOT_DB_PASSWORD in .env}
+    ports:
+      - "${POSTPILOT_DB_PORT:-5432}:5432"
+    volumes:
+      - postpilot_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  postpilot-api:
+    build:
+      context: .
+      dockerfile: src/PostPilot.Api/Dockerfile
+      target: runtime
+    container_name: postpilot-api
+    depends_on:
+      postpilot-db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__PostPilotDb: Host=postpilot-db;Port=5432;Database=${POSTPILOT_DB_NAME:-postpilot};Username=${POSTPILOT_DB_USER:-postpilot};Password=${POSTPILOT_DB_PASSWORD:?Set POSTPILOT_DB_PASSWORD in .env}
+      POSTPILOT_JWT_ISSUER: ${POSTPILOT_JWT_ISSUER:-PostPilot}
+      POSTPILOT_JWT_AUDIENCE: ${POSTPILOT_JWT_AUDIENCE:-PostPilot}
+      POSTPILOT_JWT_SIGNING_KEY: ${POSTPILOT_JWT_SIGNING_KEY:?Set POSTPILOT_JWT_SIGNING_KEY in .env}
+      POSTPILOT_JWT_EXPIRATION_MINUTES: ${POSTPILOT_JWT_EXPIRATION_MINUTES:-120}
+      POSTPILOT_STORAGE_PROVIDER: ${POSTPILOT_STORAGE_PROVIDER:-Local}
+      POSTPILOT_CLOUDINARY_CLOUD_NAME: ${POSTPILOT_CLOUDINARY_CLOUD_NAME:-}
+      POSTPILOT_CLOUDINARY_API_KEY: ${POSTPILOT_CLOUDINARY_API_KEY:-}
+      POSTPILOT_CLOUDINARY_API_SECRET: ${POSTPILOT_CLOUDINARY_API_SECRET:-}
+      POSTPILOT_CLOUDINARY_FOLDER: ${POSTPILOT_CLOUDINARY_FOLDER:-postpilot}
+      POSTPILOT_PUBLISH_PROVIDER: ${POSTPILOT_PUBLISH_PROVIDER:-Mock}
+      POSTPILOT_META_GRAPH_API_VERSION: ${POSTPILOT_META_GRAPH_API_VERSION:-v24.0}
+      POSTPILOT_FRONTEND_ORIGIN: ${POSTPILOT_FRONTEND_ORIGIN:-http://localhost:5173}
+      POSTPILOT_OAUTH_CALLBACK_BASE_URL: ${POSTPILOT_OAUTH_CALLBACK_BASE_URL:-http://localhost:5270}
+      POSTPILOT_DATA_PROTECTION_KEYS_PATH: /app/data-protection-keys
+      POSTPILOT_META_CLIENT_ID: ${POSTPILOT_META_CLIENT_ID:-}
+      POSTPILOT_META_CLIENT_SECRET: ${POSTPILOT_META_CLIENT_SECRET:-}
+      POSTPILOT_X_CLIENT_ID: ${POSTPILOT_X_CLIENT_ID:-}
+      POSTPILOT_X_CLIENT_SECRET: ${POSTPILOT_X_CLIENT_SECRET:-}
+      POSTPILOT_EBAY_CLIENT_ID: ${POSTPILOT_EBAY_CLIENT_ID:-}
+      POSTPILOT_EBAY_CLIENT_SECRET: ${POSTPILOT_EBAY_CLIENT_SECRET:-}
+      POSTPILOT_EBAY_REDIRECT_URI: ${POSTPILOT_EBAY_REDIRECT_URI:-}
+      POSTPILOT_EBAY_SANDBOX: ${POSTPILOT_EBAY_SANDBOX:-true}
+      POSTPILOT_ETSY_CLIENT_ID: ${POSTPILOT_ETSY_CLIENT_ID:-}
+      POSTPILOT_ETSY_SHARED_SECRET: ${POSTPILOT_ETSY_SHARED_SECRET:-}
+      POSTPILOT_LAZADA_APP_KEY: ${POSTPILOT_LAZADA_APP_KEY:-}
+      POSTPILOT_LAZADA_APP_SECRET: ${POSTPILOT_LAZADA_APP_SECRET:-}
+      POSTPILOT_SHOPEE_PARTNER_ID: ${POSTPILOT_SHOPEE_PARTNER_ID:-}
+      POSTPILOT_SHOPEE_PARTNER_KEY: ${POSTPILOT_SHOPEE_PARTNER_KEY:-}
+      POSTPILOT_SHOPEE_API_BASE_URL: ${POSTPILOT_SHOPEE_API_BASE_URL:-https://partner.shopeemobile.com}
+      POSTPILOT_TIKTOK_SHOP_APP_KEY: ${POSTPILOT_TIKTOK_SHOP_APP_KEY:-}
+      POSTPILOT_TIKTOK_SHOP_APP_SECRET: ${POSTPILOT_TIKTOK_SHOP_APP_SECRET:-}
+      POSTPILOT_TIKTOK_SHOP_AUTHORIZATION_URL: ${POSTPILOT_TIKTOK_SHOP_AUTHORIZATION_URL:-}
+    ports:
+      - "${POSTPILOT_API_PORT:-5270}:8080"
+    volumes:
+      - postpilot_uploads:/app/wwwroot/uploads
+      - postpilot_data_protection_keys:/app/data-protection-keys
+    restart: unless-stopped
+
+  postpilot-migrator:
+    build:
+      context: .
+      dockerfile: src/PostPilot.Api/Dockerfile
+      target: migrations
+    container_name: postpilot-migrator
+    depends_on:
+      postpilot-db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__PostPilotDb: Host=postpilot-db;Port=5432;Database=${POSTPILOT_DB_NAME:-postpilot};Username=${POSTPILOT_DB_USER:-postpilot};Password=${POSTPILOT_DB_PASSWORD:?Set POSTPILOT_DB_PASSWORD in .env}
+      POSTPILOT_JWT_SIGNING_KEY: ${POSTPILOT_JWT_SIGNING_KEY:?Set POSTPILOT_JWT_SIGNING_KEY in .env}
+    profiles:
+      - tools
+
+volumes:
+  postpilot_postgres_data:
+  postpilot_uploads:
+  postpilot_data_protection_keys:
